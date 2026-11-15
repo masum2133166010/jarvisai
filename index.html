@@ -1,0 +1,1240 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>JARVIS AI — Personal Holographic Assistant</title>
+    <meta
+      name="description"
+      content="Futuristic personal AI assistant inspired by Iron Man's JARVIS, powered by Google Gemini API with English and Bengali voice, chat, AI tools, notes, tasks, and offline PWA support."
+    />
+    <meta property="og:title" content="JARVIS AI — Personal Holographic Assistant" />
+    <meta
+      property="og:description"
+      content="Futuristic personal AI assistant powered by Google Gemini API with bilingual English/Bengali voice, AI tools, and holographic HUD interface."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#040814" id="meta-theme-color" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="JARVIS AI" />
+
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="icon" type="image/png" href="./assets/logo.png" />
+    <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- Offline Connectivity Banner -->
+    <div id="offline-banner" class="offline-banner hidden" role="status" aria-live="polite">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.58 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01" />
+      </svg>
+      <span data-i18n="offlineNotice">Offline Mode — Local notes, tasks, calculator, and cached shell remain available.</span>
+    </div>
+
+    <div class="app-shell">
+      <!-- Mobile Drawer Backdrop -->
+      <div id="sidebar-backdrop" class="sidebar-backdrop hidden" aria-hidden="true"></div>
+
+      <!-- Navigation Sidebar -->
+      <aside id="sidebar" class="sidebar" aria-label="Primary Navigation">
+        <div class="sidebar-header">
+          <a href="#dashboard" class="brand-lockup" data-nav="dashboard">
+            <img
+              src="./assets/logo.png"
+              alt="JARVIS AI Emblem"
+              class="brand-logo"
+              width="36"
+              height="36"
+              referrerpolicy="no-referrer"
+            />
+            <span class="brand-title">JARVIS AI</span>
+          </a>
+          <button
+            id="close-sidebar-btn"
+            class="icon-btn mobile-only"
+            type="button"
+            aria-label="Close navigation menu"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <nav class="sidebar-nav" id="sidebar-nav">
+          <div class="nav-group">
+            <div class="nav-group-label" data-i18n="navGroupCore">Core Interface</div>
+            <button type="button" class="nav-item active" data-nav="dashboard">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="3" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="14" width="7" height="7" rx="1" />
+                <rect x="3" y="14" width="7" height="7" rx="1" />
+              </svg>
+              <span data-i18n="navDashboard">Dashboard</span>
+            </button>
+            <button type="button" class="nav-item" data-nav="chat">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+              <span data-i18n="navChat">AI Chat</span>
+            </button>
+            <button type="button" class="nav-item" data-nav="voice">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                <line x1="12" y1="19" x2="12" y2="23" />
+                <line x1="8" y1="23" x2="16" y2="23" />
+              </svg>
+              <span data-i18n="navVoice">Voice Assistant</span>
+            </button>
+            <button type="button" class="nav-item" data-nav="tools">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+              </svg>
+              <span data-i18n="navTools">AI Tools</span>
+            </button>
+            <button type="button" class="nav-item" data-nav="history">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="12" cy="12" r="9" />
+                <polyline points="12 7 12 12 15 15" />
+              </svg>
+              <span data-i18n="navHistory">History</span>
+            </button>
+          </div>
+
+          <div class="nav-group">
+            <div class="nav-group-label" data-i18n="navGroupProductivity">Workspace</div>
+            <button type="button" class="nav-item" data-nav="notes">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+              </svg>
+              <span data-i18n="navNotes">Notes</span>
+            </button>
+            <button type="button" class="nav-item" data-nav="tasks">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <polyline points="9 11 12 14 22 4" />
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+              </svg>
+              <span data-i18n="navTasks">Tasks</span>
+            </button>
+            <button type="button" class="nav-item" data-nav="calculator">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="4" y="2" width="16" height="20" rx="2" />
+                <line x1="8" y1="6" x2="16" y2="6" />
+                <line x1="8" y1="11" x2="8" y2="11.01" />
+                <line x1="12" y1="11" x2="12" y2="11.01" />
+                <line x1="16" y1="11" x2="16" y2="11.01" />
+                <line x1="8" y1="15" x2="8" y2="15.01" />
+                <line x1="12" y1="15" x2="12" y2="15.01" />
+                <line x1="16" y1="15" x2="16" y2="15.01" />
+              </svg>
+              <span data-i18n="navCalculator">Calculator</span>
+            </button>
+            <button type="button" class="nav-item" data-nav="weather">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z" />
+              </svg>
+              <span data-i18n="navWeather">Weather</span>
+            </button>
+            <button type="button" class="nav-item" data-nav="search">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <span data-i18n="navSearch">Web Search</span>
+            </button>
+          </div>
+
+          <div class="nav-group">
+            <div class="nav-group-label" data-i18n="navGroupSystem">System</div>
+            <button type="button" class="nav-item" data-nav="settings">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+              </svg>
+              <span data-i18n="navSettings">Settings</span>
+            </button>
+            <button type="button" class="nav-item" data-nav="about">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+              </svg>
+              <span data-i18n="navAbout">About JARVIS</span>
+            </button>
+          </div>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button type="button" id="command-palette-trigger" class="btn btn-ghost btn-full">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <span data-i18n="quickCommands">Quick Command</span>
+            <kbd class="kbd-hint">Ctrl+K</kbd>
+          </button>
+          <button type="button" id="pwa-install-btn" class="btn btn-primary btn-full hidden">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            <span id="pwa-install-label" data-i18n="installApp">Install App</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Workspace -->
+      <div class="main-wrapper">
+        <!-- Top HUD Header -->
+        <header class="topbar">
+          <div class="topbar-left">
+            <button
+              id="open-sidebar-btn"
+              class="icon-btn mobile-only"
+              type="button"
+              aria-label="Open navigation menu"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </button>
+            <div class="topbar-title-wrap">
+              <span class="topbar-kicker" data-i18n="systemName">JARVIS Interface</span>
+              <h1 id="page-title" class="topbar-title">Dashboard</h1>
+            </div>
+          </div>
+
+          <div class="topbar-telemetry">
+            <div class="telemetry-item" id="header-clock-wrap" title="Local Date & Time">
+              <span class="telemetry-label" data-i18n="labelTime">Clock</span>
+              <span id="header-clock" class="telemetry-value tabular-nums">--:--:--</span>
+            </div>
+            <div class="telemetry-divider" aria-hidden="true"></div>
+            <div class="telemetry-item" id="header-ai-status-wrap">
+              <span class="telemetry-label" data-i18n="labelAI">Gemini API</span>
+              <span id="header-ai-status" class="telemetry-value status-text-warn">Not Configured</span>
+            </div>
+            <div class="telemetry-divider desktop-only" aria-hidden="true"></div>
+            <div class="telemetry-item desktop-only" id="header-mic-status-wrap">
+              <span class="telemetry-label" data-i18n="labelMic">Microphone</span>
+              <span id="header-mic-status" class="telemetry-value">Standby</span>
+            </div>
+          </div>
+
+          <div class="topbar-actions">
+            <button
+              type="button"
+              id="lang-toggle-btn"
+              class="btn btn-secondary btn-sm"
+              title="Switch Interface Language (English / Bengali)"
+            >
+              EN / বাং
+            </button>
+            <button
+              type="button"
+              id="theme-toggle-btn"
+              class="icon-btn"
+              title="Toggle Dark / Light Theme"
+              aria-label="Toggle Dark or Light Theme"
+            >
+              <svg id="theme-icon-sun" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5" />
+                <line x1="12" y1="1" x2="12" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                <line x1="1" y1="12" x2="3" y2="12" />
+                <line x1="21" y1="12" x2="23" y2="12" />
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+              </svg>
+              <svg id="theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              id="fullscreen-toggle-btn"
+              class="icon-btn desktop-only"
+              title="Toggle Fullscreen"
+              aria-label="Toggle Fullscreen Mode"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 3 21 3 21 9" />
+                <polyline points="9 21 3 21 3 15" />
+                <line x1="21" y1="3" x2="14" y2="10" />
+                <line x1="3" y1="21" x2="10" y2="14" />
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <!-- Missing API Key Setup Banner -->
+        <div id="api-setup-banner" class="setup-banner hidden" role="region" aria-label="Gemini API Setup Required">
+          <div class="setup-banner-content">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
+            </svg>
+            <div>
+              <strong data-i18n="setupBannerTitle">Gemini API Key Required for AI Features</strong>
+              <p data-i18n="setupBannerDesc">
+                Enter your Google Gemini API key in Settings to activate AI Chat, Voice Assistant responses, and all 9 AI Tools.
+              </p>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary btn-sm" data-nav="settings" data-i18n="configureKey">
+            Configure API Key
+          </button>
+        </div>
+
+        <!-- Viewport Container for All 12 Pages -->
+        <main class="main-viewport" id="main-viewport">
+          <!-- 1. DASHBOARD PAGE -->
+          <section class="page active" id="page-dashboard" data-page="dashboard">
+            <div class="dashboard-grid">
+              <!-- Primary Holographic Core Stage -->
+              <div class="hud-panel core-stage-panel">
+                <div class="panel-header">
+                  <div>
+                    <h2 class="panel-title" data-i18n="dashCoreTitle">JARVIS Holographic Core</h2>
+                    <p class="panel-subtitle" id="dash-core-subtitle">Ready for voice or text command</p>
+                  </div>
+                  <div class="panel-meta-inline">
+                    <span id="dash-date" class="tabular-nums">--</span>
+                  </div>
+                </div>
+
+                <div class="core-centerpiece">
+                  <button
+                    type="button"
+                    id="dash-core-btn"
+                    class="jarvis-core"
+                    data-state="idle"
+                    aria-label="Activate JARVIS Voice Assistant"
+                    title="Click to toggle voice listening"
+                  >
+                    <span class="core-ring core-ring-outer" aria-hidden="true"></span>
+                    <span class="core-ring core-ring-mid" aria-hidden="true"></span>
+                    <span class="core-ring core-ring-inner" aria-hidden="true"></span>
+                    <span class="core-nucleus" aria-hidden="true">
+                      <img src="./assets/logo.png" alt="" class="core-emblem-img" referrerpolicy="no-referrer" />
+                    </span>
+                  </button>
+
+                  <!-- Animated Sound Waves -->
+                  <div class="sound-wave" id="dash-sound-wave" data-active="false" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span>
+                  </div>
+
+                  <div class="core-readout">
+                    <div class="core-state-label" id="dash-state-text">STANDBY</div>
+                    <div class="core-model-label" id="dash-model-label">Model: gemini-4-hydrogen</div>
+                  </div>
+                </div>
+
+                <!-- Voice & Core Controls -->
+                <div class="core-controls">
+                  <button type="button" id="dash-mic-btn" class="btn btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                    </svg>
+                    <span data-i18n="btnListen">Start Voice</span>
+                  </button>
+                  <button type="button" id="dash-stop-speech-btn" class="btn btn-secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="6" y="6" width="12" height="12" rx="1" />
+                    </svg>
+                    <span data-i18n="btnStopSpeaking">Mute / Stop</span>
+                  </button>
+                  <button type="button" id="dash-new-chat-btn" class="btn btn-secondary" data-nav="chat">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="12" y1="5" x2="12" y2="19" />
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    <span data-i18n="btnOpenChat">Full Chat</span>
+                  </button>
+                </div>
+
+                <!-- System Telemetry Row -->
+                <div class="kpi-strip">
+                  <div class="kpi-cell">
+                    <span class="kpi-label" data-i18n="kpiSystem">System Status</span>
+                    <span class="kpi-value" id="dash-system-status">Operational</span>
+                  </div>
+                  <div class="kpi-cell">
+                    <span class="kpi-label" data-i18n="kpiAI">AI Connection</span>
+                    <span class="kpi-value" id="dash-ai-status">Not Configured</span>
+                  </div>
+                  <div class="kpi-cell">
+                    <span class="kpi-label" data-i18n="kpiMic">Microphone</span>
+                    <span class="kpi-value" id="dash-mic-status">Standby</span>
+                  </div>
+                  <div class="kpi-cell">
+                    <span class="kpi-label" data-i18n="kpiTasks">Open Tasks</span>
+                    <span class="kpi-value tabular-nums" id="dash-open-tasks">0</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column: Embedded Quick Chat + Quick Actions -->
+              <div class="dashboard-side-col">
+                <!-- Embedded Quick Chat -->
+                <div class="hud-panel dash-chat-panel">
+                  <div class="panel-header">
+                    <div>
+                      <h2 class="panel-title" data-i18n="dashChatTitle">Direct Command &amp; Chat</h2>
+                      <p class="panel-subtitle" data-i18n="dashChatSub">English &amp; বাংলা supported</p>
+                    </div>
+                    <button type="button" class="btn btn-ghost btn-sm" data-nav="chat" data-i18n="expand">Expand</button>
+                  </div>
+                  <div id="dash-chat-messages" class="dash-chat-messages" aria-live="polite"></div>
+                  <form id="dash-chat-form" class="dash-chat-form">
+                    <input
+                      type="text"
+                      id="dash-chat-input"
+                      class="input"
+                      placeholder="Ask JARVIS or enter a command (e.g., What time is it? / আজকের তারিখ কত?)"
+                      autocomplete="off"
+                    />
+                    <button type="submit" class="btn btn-primary" data-i18n="send">Send</button>
+                  </form>
+                </div>
+
+                <!-- Quick Action Grid -->
+                <div class="hud-panel">
+                  <div class="panel-header">
+                    <h2 class="panel-title" data-i18n="quickActionsTitle">Quick Actions</h2>
+                  </div>
+                  <div class="quick-actions-grid">
+                    <button type="button" class="quick-action-btn" data-quick-cmd="What time is it?">
+                      <span class="qa-title" data-i18n="qaTime">Current Time</span>
+                      <span class="qa-desc">Local system clock</span>
+                    </button>
+                    <button type="button" class="quick-action-btn" data-nav="tools" data-tool-preset="translator">
+                      <span class="qa-title" data-i18n="qaTranslate">EN ↔ বাং Translator</span>
+                      <span class="qa-desc">Gemini translation</span>
+                    </button>
+                    <button type="button" class="quick-action-btn" data-nav="tools" data-tool-preset="coding">
+                      <span class="qa-title" data-i18n="qaCode">Coding Assistant</span>
+                      <span class="qa-desc">Debug &amp; generate</span>
+                    </button>
+                    <button type="button" class="quick-action-btn" data-nav="notes">
+                      <span class="qa-title" data-i18n="qaNotes">Quick Note</span>
+                      <span class="qa-desc" id="dash-notes-count">0 saved notes</span>
+                    </button>
+                    <button type="button" class="quick-action-btn" data-nav="weather">
+                      <span class="qa-title" data-i18n="qaWeather">Live Weather</span>
+                      <span class="qa-desc">Forecast &amp; conditions</span>
+                    </button>
+                    <button type="button" class="quick-action-btn" data-nav="settings">
+                      <span class="qa-title" data-i18n="qaSettings">API &amp; Voice Setup</span>
+                      <span class="qa-desc">Configure Gemini key</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 2. AI CHAT PAGE -->
+          <section class="page" id="page-chat" data-page="chat">
+            <div class="chat-layout">
+              <!-- Conversations Drawer / List -->
+              <aside class="hud-panel chat-sessions-panel">
+                <div class="panel-header">
+                  <h2 class="panel-title" data-i18n="conversations">Conversations</h2>
+                  <button type="button" id="chat-new-btn" class="btn btn-primary btn-sm">
+                    + <span data-i18n="newChat">New</span>
+                  </button>
+                </div>
+                <div id="chat-sessions-list" class="sessions-list"></div>
+              </aside>
+
+              <!-- Active Chat Thread -->
+              <div class="hud-panel chat-main-panel">
+                <div class="chat-toolbar">
+                  <div class="chat-toolbar-info">
+                    <h2 id="chat-active-title" class="panel-title">New Conversation</h2>
+                    <span id="chat-active-meta" class="panel-subtitle tabular-nums">0 messages</span>
+                  </div>
+                  <div class="chat-toolbar-actions">
+                    <label class="toggle-inline" title="Automatically read JARVIS responses aloud">
+                      <input type="checkbox" id="chat-autospeak-toggle" />
+                      <span data-i18n="autoSpeak">Auto-Speak</span>
+                    </label>
+                    <button type="button" id="chat-regenerate-btn" class="btn btn-secondary btn-sm" title="Regenerate last AI response">
+                      <span data-i18n="regenerate">Regenerate</span>
+                    </button>
+                    <button type="button" id="chat-export-btn" class="btn btn-secondary btn-sm" title="Export conversation as Markdown">
+                      <span data-i18n="export">Export</span>
+                    </button>
+                    <button type="button" id="chat-clear-btn" class="btn btn-danger-ghost btn-sm" title="Clear messages in this conversation">
+                      <span data-i18n="clear">Clear</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div id="chat-messages" class="chat-messages" aria-live="polite"></div>
+
+                <!-- Streaming / Typing Indicator -->
+                <div id="chat-loading-bar" class="chat-loading-bar hidden">
+                  <div class="typing-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+                  <span data-i18n="jarvisThinking">JARVIS is formulating a response...</span>
+                  <button type="button" id="chat-stop-btn" class="btn btn-danger-ghost btn-sm">
+                    <span data-i18n="stopGeneration">Stop Generation</span>
+                  </button>
+                </div>
+
+                <form id="chat-form" class="chat-composer">
+                  <button
+                    type="button"
+                    id="chat-mic-btn"
+                    class="icon-btn"
+                    title="Dictate message with microphone"
+                    aria-label="Dictate message"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                    </svg>
+                  </button>
+                  <textarea
+                    id="chat-input"
+                    class="textarea chat-textarea"
+                    rows="1"
+                    placeholder="Message JARVIS in English or বাংলা... (Enter to send, Shift+Enter for new line)"
+                  ></textarea>
+                  <button type="submit" id="chat-send-btn" class="btn btn-primary">
+                    <span data-i18n="send">Send</span>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </section>
+
+          <!-- 3. VOICE ASSISTANT PAGE -->
+          <section class="page" id="page-voice" data-page="voice">
+            <div class="voice-layout">
+              <div class="hud-panel voice-console-panel">
+                <div class="panel-header">
+                  <div>
+                    <h2 class="panel-title" data-i18n="voiceConsoleTitle">Holographic Voice Console</h2>
+                    <p class="panel-subtitle" id="voice-compat-status">Checking Web Speech API compatibility...</p>
+                  </div>
+                  <div class="segmented-control" role="group" aria-label="Recognition Language">
+                    <button type="button" class="seg-btn active" data-voice-lang="en-US">English</button>
+                    <button type="button" class="seg-btn" data-voice-lang="bn-BD">বাংলা (BD)</button>
+                    <button type="button" class="seg-btn" data-voice-lang="bn-IN">বাংলা (IN)</button>
+                  </div>
+                </div>
+
+                <div class="voice-stage">
+                  <button type="button" id="voice-core-btn" class="jarvis-core jarvis-core-lg" data-state="idle">
+                    <span class="core-ring core-ring-outer" aria-hidden="true"></span>
+                    <span class="core-ring core-ring-mid" aria-hidden="true"></span>
+                    <span class="core-ring core-ring-inner" aria-hidden="true"></span>
+                    <span class="core-nucleus" aria-hidden="true">
+                      <img src="./assets/logo.png" alt="" class="core-emblem-img" referrerpolicy="no-referrer" />
+                    </span>
+                  </button>
+
+                  <canvas id="voice-visualizer" class="voice-visualizer" width="520" height="84" aria-hidden="true"></canvas>
+
+                  <div class="voice-live-caption" id="voice-live-caption">
+                    Tap the core or press "Start Listening" to speak to JARVIS.
+                  </div>
+                </div>
+
+                <div class="voice-action-bar">
+                  <button type="button" id="voice-toggle-listen-btn" class="btn btn-primary">
+                    <span data-i18n="startListening">Start Listening</span>
+                  </button>
+                  <button type="button" id="voice-interrupt-btn" class="btn btn-secondary">
+                    <span data-i18n="interruptSpeaking">Interrupt Speaking</span>
+                  </button>
+                  <button type="button" id="voice-mute-btn" class="btn btn-secondary">
+                    <span data-i18n="muteVoice">Mute Output</span>
+                  </button>
+                </div>
+
+                <div class="voice-options-grid">
+                  <label class="field">
+                    <span class="field-label" data-i18n="voiceSelect">Speech Voice</span>
+                    <select id="voice-select" class="select"></select>
+                  </label>
+                  <label class="field">
+                    <span class="field-label">
+                      <span data-i18n="speechSpeed">Speech Speed</span>:
+                      <strong id="voice-speed-val" class="tabular-nums">1.0x</strong>
+                    </span>
+                    <input type="range" id="voice-speed-range" min="0.6" max="1.6" step="0.05" value="1.0" class="range" />
+                  </label>
+                  <label class="toggle-card">
+                    <input type="checkbox" id="voice-autoresponse-toggle" checked />
+                    <div>
+                      <strong data-i18n="autoVoiceResp">Automatic Voice Response</strong>
+                      <span>Speak AI answers aloud automatically</span>
+                    </div>
+                  </label>
+                  <label class="toggle-card">
+                    <input type="checkbox" id="voice-continuous-toggle" />
+                    <div>
+                      <strong data-i18n="continuousMode">Continuous Conversation</strong>
+                      <span>Re-arm microphone after JARVIS finishes speaking</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Voice Transcript Log -->
+              <div class="hud-panel voice-transcript-panel">
+                <div class="panel-header">
+                  <h2 class="panel-title" data-i18n="voiceLogTitle">Voice Interaction Log</h2>
+                  <button type="button" id="voice-clear-log-btn" class="btn btn-ghost btn-sm" data-i18n="clear">Clear</button>
+                </div>
+                <div id="voice-transcript-log" class="voice-transcript-log"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 4. AI TOOLS PAGE -->
+          <section class="page" id="page-tools" data-page="tools">
+            <div class="tools-layout">
+              <div class="hud-panel tools-menu-panel">
+                <div class="panel-header">
+                  <h2 class="panel-title" data-i18n="aiToolsTitle">Gemini AI Workbench</h2>
+                  <p class="panel-subtitle">9 specialized productivity modules</p>
+                </div>
+                <div id="tools-selector-list" class="tools-selector-list">
+                  <button type="button" class="tool-tab active" data-tool="writer">AI Writer</button>
+                  <button type="button" class="tool-tab" data-tool="translator">AI Translator (EN ↔ বাংলা)</button>
+                  <button type="button" class="tool-tab" data-tool="summarizer">AI Summarizer</button>
+                  <button type="button" class="tool-tab" data-tool="coding">AI Coding Assistant</button>
+                  <button type="button" class="tool-tab" data-tool="email">AI Email Writer</button>
+                  <button type="button" class="tool-tab" data-tool="qa">AI Question Answering</button>
+                  <button type="button" class="tool-tab" data-tool="study">AI Study Assistant</button>
+                  <button type="button" class="tool-tab" data-tool="ideas">AI Idea Generator</button>
+                  <button type="button" class="tool-tab" data-tool="improver">AI Text Improver</button>
+                </div>
+              </div>
+
+              <div class="hud-panel tools-workspace-panel">
+                <div class="panel-header">
+                  <div>
+                    <h2 id="tool-active-title" class="panel-title">AI Writer</h2>
+                    <p id="tool-active-desc" class="panel-subtitle">Draft structured articles, reports, scripts, and creative prose.</p>
+                  </div>
+                </div>
+
+                <form id="tool-form" class="tool-form">
+                  <div class="tool-options-row" id="tool-options-row">
+                    <label class="field">
+                      <span class="field-label" id="tool-opt1-label">Tone / Style</span>
+                      <select id="tool-opt1-select" class="select"></select>
+                    </label>
+                    <label class="field">
+                      <span class="field-label" id="tool-opt2-label">Output Language</span>
+                      <select id="tool-opt2-select" class="select"></select>
+                    </label>
+                  </div>
+
+                  <label class="field">
+                    <span class="field-label" id="tool-input-label">Your Prompt or Source Text</span>
+                    <textarea
+                      id="tool-input"
+                      class="textarea"
+                      rows="6"
+                      placeholder="Enter your topic, text, code, or question..."
+                      required
+                    ></textarea>
+                  </label>
+
+                  <div class="tool-submit-row">
+                    <button type="submit" id="tool-run-btn" class="btn btn-primary">Run AI Tool</button>
+                    <button type="button" id="tool-stop-btn" class="btn btn-danger-ghost hidden">Stop</button>
+                    <button type="button" id="tool-clear-btn" class="btn btn-ghost">Clear</button>
+                  </div>
+                </form>
+
+                <div class="tool-output-wrap">
+                  <div class="tool-output-header">
+                    <span class="field-label">Generated Output</span>
+                    <div class="tool-output-actions">
+                      <button type="button" id="tool-copy-btn" class="btn btn-secondary btn-sm">Copy</button>
+                      <button type="button" id="tool-speak-btn" class="btn btn-secondary btn-sm">Speak</button>
+                      <button type="button" id="tool-save-note-btn" class="btn btn-secondary btn-sm">Save to Notes</button>
+                    </div>
+                  </div>
+                  <div id="tool-output" class="tool-output markdown-body">
+                    <p class="empty-hint">Configure your prompt above and select "Run AI Tool".</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 5. HISTORY PAGE -->
+          <section class="page" id="page-history" data-page="history">
+            <div class="hud-panel">
+              <div class="panel-header wrap-header">
+                <div>
+                  <h2 class="panel-title" data-i18n="historyTitle">Conversation History</h2>
+                  <p class="panel-subtitle">Locally stored chat sessions in this browser (no cloud sync)</p>
+                </div>
+                <div class="header-controls-row">
+                  <input type="search" id="history-search" class="input input-sm" placeholder="Search conversations..." />
+                  <button type="button" id="history-export-all-btn" class="btn btn-secondary btn-sm">Export All JSON</button>
+                  <button type="button" id="history-clear-all-btn" class="btn btn-danger-ghost btn-sm">Clear All</button>
+                </div>
+              </div>
+              <div id="history-list" class="history-list"></div>
+            </div>
+          </section>
+
+          <!-- 6. NOTES PAGE -->
+          <section class="page" id="page-notes" data-page="notes">
+            <div class="notes-layout">
+              <div class="hud-panel notes-editor-panel">
+                <div class="panel-header">
+                  <h2 class="panel-title" id="note-editor-heading">Create Note</h2>
+                  <button type="button" id="note-reset-btn" class="btn btn-ghost btn-sm hidden">Cancel Edit</button>
+                </div>
+                <form id="note-form" class="stack-form">
+                  <input type="hidden" id="note-edit-id" />
+                  <label class="field">
+                    <span class="field-label">Title</span>
+                    <input type="text" id="note-title-input" class="input" placeholder="Note title..." required />
+                  </label>
+                  <label class="field">
+                    <span class="field-label">Category / Tag</span>
+                    <input type="text" id="note-tag-input" class="input" placeholder="e.g. Work, Study, Ideas, Code" />
+                  </label>
+                  <label class="field">
+                    <span class="field-label">Content</span>
+                    <textarea id="note-body-input" class="textarea" rows="8" placeholder="Write your note in English or বাংলা..." required></textarea>
+                  </label>
+                  <button type="submit" id="note-save-btn" class="btn btn-primary">Save Note</button>
+                </form>
+              </div>
+
+              <div class="hud-panel notes-list-panel">
+                <div class="panel-header wrap-header">
+                  <div>
+                    <h2 class="panel-title">Saved Notes</h2>
+                    <p class="panel-subtitle tabular-nums" id="notes-count-label">0 notes</p>
+                  </div>
+                  <input type="search" id="notes-search" class="input input-sm" placeholder="Search notes..." />
+                </div>
+                <div id="notes-list" class="notes-grid"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 7. TASKS PAGE -->
+          <section class="page" id="page-tasks" data-page="tasks">
+            <div class="tasks-layout">
+              <div class="hud-panel task-form-panel">
+                <div class="panel-header">
+                  <h2 class="panel-title">Add Task</h2>
+                </div>
+                <form id="task-form" class="stack-form">
+                  <label class="field">
+                    <span class="field-label">Task Description</span>
+                    <input type="text" id="task-title-input" class="input" placeholder="What needs to be accomplished?" required />
+                  </label>
+                  <div class="two-col-fields">
+                    <label class="field">
+                      <span class="field-label">Priority</span>
+                      <select id="task-priority-input" class="select">
+                        <option value="high">High</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="low">Low</option>
+                      </select>
+                    </label>
+                    <label class="field">
+                      <span class="field-label">Due Date (Optional)</span>
+                      <input type="date" id="task-due-input" class="input" />
+                    </label>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Add Task</button>
+                </form>
+              </div>
+
+              <div class="hud-panel tasks-list-panel">
+                <div class="panel-header wrap-header">
+                  <div>
+                    <h2 class="panel-title">Task Queue</h2>
+                    <p class="panel-subtitle tabular-nums" id="tasks-summary-label">0 active · 0 completed</p>
+                  </div>
+                  <div class="header-controls-row">
+                    <div class="segmented-control" id="task-filter-group">
+                      <button type="button" class="seg-btn active" data-task-filter="all">All</button>
+                      <button type="button" class="seg-btn" data-task-filter="active">Active</button>
+                      <button type="button" class="seg-btn" data-task-filter="completed">Completed</button>
+                      <button type="button" class="seg-btn" data-task-filter="high">High</button>
+                    </div>
+                    <button type="button" id="tasks-clear-completed-btn" class="btn btn-danger-ghost btn-sm">Clear Completed</button>
+                  </div>
+                </div>
+                <div id="tasks-list" class="tasks-list"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 8. CALCULATOR PAGE -->
+          <section class="page" id="page-calculator" data-page="calculator">
+            <div class="calc-layout">
+              <div class="hud-panel calc-main-panel">
+                <div class="panel-header">
+                  <h2 class="panel-title">Scientific HUD Calculator</h2>
+                  <span class="panel-subtitle">Safe expression parser · Keyboard supported</span>
+                </div>
+                <div class="calc-display">
+                  <div id="calc-expression" class="calc-expression tabular-nums">0</div>
+                  <div id="calc-result" class="calc-result tabular-nums">0</div>
+                </div>
+                <form id="calc-manual-form" class="calc-manual-form">
+                  <input
+                    type="text"
+                    id="calc-manual-input"
+                    class="input font-mono"
+                    placeholder="Type expression e.g. (100 + 200) * 1.5 or sqrt(144)"
+                  />
+                  <button type="submit" class="btn btn-primary">Evaluate</button>
+                </form>
+                <div class="calc-keypad" id="calc-keypad">
+                  <button type="button" class="calc-key fn" data-calc="AC">AC</button>
+                  <button type="button" class="calc-key fn" data-calc="DEL">DEL</button>
+                  <button type="button" class="calc-key fn" data-calc="(">(</button>
+                  <button type="button" class="calc-key fn" data-calc=")">)</button>
+                  <button type="button" class="calc-key op" data-calc="/">÷</button>
+
+                  <button type="button" class="calc-key fn" data-calc="sin(">sin</button>
+                  <button type="button" class="calc-key" data-calc="7">7</button>
+                  <button type="button" class="calc-key" data-calc="8">8</button>
+                  <button type="button" class="calc-key" data-calc="9">9</button>
+                  <button type="button" class="calc-key op" data-calc="*">×</button>
+
+                  <button type="button" class="calc-key fn" data-calc="cos(">cos</button>
+                  <button type="button" class="calc-key" data-calc="4">4</button>
+                  <button type="button" class="calc-key" data-calc="5">5</button>
+                  <button type="button" class="calc-key" data-calc="6">6</button>
+                  <button type="button" class="calc-key op" data-calc="-">−</button>
+
+                  <button type="button" class="calc-key fn" data-calc="tan(">tan</button>
+                  <button type="button" class="calc-key" data-calc="1">1</button>
+                  <button type="button" class="calc-key" data-calc="2">2</button>
+                  <button type="button" class="calc-key" data-calc="3">3</button>
+                  <button type="button" class="calc-key op" data-calc="+">+</button>
+
+                  <button type="button" class="calc-key fn" data-calc="sqrt(">√</button>
+                  <button type="button" class="calc-key fn" data-calc="^">xʸ</button>
+                  <button type="button" class="calc-key" data-calc="0">0</button>
+                  <button type="button" class="calc-key" data-calc=".">.</button>
+                  <button type="button" class="calc-key eq" data-calc="=">=</button>
+                </div>
+              </div>
+
+              <div class="hud-panel calc-history-panel">
+                <div class="panel-header">
+                  <h2 class="panel-title">Calculation Tape</h2>
+                  <button type="button" id="calc-clear-history-btn" class="btn btn-ghost btn-sm">Clear</button>
+                </div>
+                <div id="calc-history-list" class="calc-history-list"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 9. WEATHER PAGE -->
+          <section class="page" id="page-weather" data-page="weather">
+            <div class="hud-panel">
+              <div class="panel-header wrap-header">
+                <div>
+                  <h2 class="panel-title">Atmospheric &amp; Weather Telemetry</h2>
+                  <p class="panel-subtitle">Live forecast via Open-Meteo (no extra API key needed)</p>
+                </div>
+                <form id="weather-search-form" class="header-controls-row">
+                  <input type="text" id="weather-city-input" class="input input-sm" placeholder="Enter city (e.g. Dhaka, London, Tokyo)" />
+                  <button type="submit" class="btn btn-primary btn-sm">Lookup</button>
+                  <button type="button" id="weather-geo-btn" class="btn btn-secondary btn-sm">Use My Location</button>
+                </form>
+              </div>
+              <div id="weather-content" class="weather-content">
+                <p class="empty-hint">Search a city or use your current location to load live atmospheric telemetry.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 10. WEB SEARCH PAGE -->
+          <section class="page" id="page-search" data-page="search">
+            <div class="hud-panel">
+              <div class="panel-header">
+                <div>
+                  <h2 class="panel-title">Web Search &amp; Knowledge Lookup</h2>
+                  <p class="panel-subtitle">Instant Wikipedia summary preview + safe external engine launch with confirmation</p>
+                </div>
+              </div>
+              <form id="web-search-form" class="search-bar-form">
+                <input
+                  type="search"
+                  id="web-search-input"
+                  class="input"
+                  placeholder="Search a topic, documentation, or query..."
+                  required
+                />
+                <button type="submit" class="btn btn-primary">Search Summary</button>
+              </form>
+
+              <div class="search-launchers">
+                <button type="button" class="btn btn-secondary btn-sm" data-search-engine="google">Open in Google</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-search-engine="duckduckgo">Open in DuckDuckGo</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-search-engine="youtube">Open in YouTube</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-search-engine="github">Open in GitHub</button>
+                <button type="button" id="search-ask-jarvis-btn" class="btn btn-primary btn-sm">Ask JARVIS AI</button>
+              </div>
+
+              <div id="web-search-results" class="web-search-results">
+                <p class="empty-hint">Enter a query above to retrieve an instant Wikipedia knowledge brief or launch a confirmed web search.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 11. SETTINGS PAGE -->
+          <section class="page" id="page-settings" data-page="settings">
+            <div class="settings-grid">
+              <!-- Gemini API Key Configuration -->
+              <div class="hud-panel settings-panel">
+                <div class="panel-header">
+                  <div>
+                    <h2 class="panel-title">Google Gemini API Configuration</h2>
+                    <p class="panel-subtitle">Configure your personal API key directly in the browser</p>
+                  </div>
+                  <span id="settings-conn-badge" class="status-text-warn">Not Configured</span>
+                </div>
+
+                <div class="security-notice" role="note">
+                  <strong>Browser API Key Transparency &amp; Security Warning</strong>
+                  <p>
+                    Your Gemini API key is stored locally in this browser's <code>localStorage</code> so this static GitHub Pages app can call Gemini directly without a backend server.
+                    <code>localStorage</code> is <strong>not</strong> encrypted hardware storage—any browser extension or user inspecting browser storage/DevTools can read it.
+                    Always configure <strong>HTTP referrer restrictions</strong> (your GitHub Pages URL) and strict <strong>spending/rate quotas</strong> in Google AI Studio / Google Cloud Console, and never share a device where your key is saved.
+                  </p>
+                </div>
+
+                <form id="api-key-form" class="stack-form">
+                  <label class="field">
+                    <span class="field-label">Gemini API Key</span>
+                    <div class="input-with-action">
+                      <input
+                        type="password"
+                        id="settings-api-key"
+                        class="input font-mono"
+                        placeholder="Paste your Gemini API key (e.g. AIza...)"
+                        autocomplete="off"
+                        spellcheck="false"
+                      />
+                      <button type="button" id="toggle-key-visibility-btn" class="btn btn-secondary btn-sm">Show</button>
+                    </div>
+                  </label>
+
+                  <div class="btn-row">
+                    <button type="submit" id="save-api-key-btn" class="btn btn-primary">Save API Key</button>
+                    <button type="button" id="test-api-key-btn" class="btn btn-secondary">Test API Connection</button>
+                    <button type="button" id="remove-api-key-btn" class="btn btn-danger-ghost">Remove API Key</button>
+                  </div>
+
+                  <div id="api-test-result" class="api-test-result hidden" role="status" aria-live="polite"></div>
+                </form>
+              </div>
+
+              <!-- AI Model & Generation Parameters -->
+              <div class="hud-panel settings-panel">
+                <div class="panel-header">
+                  <div>
+                    <h2 class="panel-title">Model &amp; Generation Settings</h2>
+                    <p class="panel-subtitle">Select Gemini model and response limits</p>
+                  </div>
+                </div>
+
+                <div class="stack-form">
+                  <label class="field">
+                    <span class="field-label">AI Model</span>
+                    <select id="settings-model" class="select">
+                      <option value="gemini-4-hydrogen">gemini-4-hydrogen (Recommended · Fast &amp; Intelligent)</option>
+                      <option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite (Ultra-Fast · Low Quota)</option>
+                      <option value="gemini-4-argon">gemini-4-argon (Advanced Coding &amp; Reasoning)</option>
+                      <option value="gemini-4-carbon">gemini-4-carbon (Deep Architecture &amp; Analysis)</option>
+                      <option value="gemini-2.5-flash">gemini-2.5-flash (Balanced Multimodal)</option>
+                      <option value="gemini-2.5-pro">gemini-2.5-pro (Complex Reasoning)</option>
+                      <option value="custom">Custom Model ID...</option>
+                    </select>
+                  </label>
+
+                  <label class="field hidden" id="settings-custom-model-wrap">
+                    <span class="field-label">Custom Model ID</span>
+                    <input type="text" id="settings-custom-model" class="input font-mono" placeholder="e.g. gemini-3.1-pro-preview" />
+                  </label>
+
+                  <label class="field">
+                    <span class="field-label">
+                      Temperature: <strong id="settings-temp-val" class="tabular-nums">0.7</strong>
+                    </span>
+                    <input type="range" id="settings-temperature" min="0" max="2" step="0.1" value="0.7" class="range" />
+                    <span class="field-hint">Applied on models supporting temperature; automatically omitted for Gemini 4 series to follow API rules.</span>
+                  </label>
+
+                  <label class="field">
+                    <span class="field-label">
+                      Maximum Response Length (Tokens): <strong id="settings-max-tokens-val" class="tabular-nums">2048</strong>
+                    </span>
+                    <input type="range" id="settings-max-tokens" min="256" max="8192" step="256" value="2048" class="range" />
+                  </label>
+                </div>
+              </div>
+
+              <!-- Interface, Voice & Notifications -->
+              <div class="hud-panel settings-panel">
+                <div class="panel-header">
+                  <div>
+                    <h2 class="panel-title">Personalization, Voice &amp; Local Memory</h2>
+                    <p class="panel-subtitle">Preferences stored locally in this browser (no cloud sync)</p>
+                  </div>
+                </div>
+
+                <div class="stack-form">
+                  <div class="two-col-fields">
+                    <label class="field">
+                      <span class="field-label">Interface Language</span>
+                      <select id="settings-language" class="select">
+                        <option value="en">English</option>
+                        <option value="bn">বাংলা (Bengali)</option>
+                      </select>
+                    </label>
+                    <label class="field">
+                      <span class="field-label">Interface Theme</span>
+                      <select id="settings-theme" class="select">
+                        <option value="dark">JARVIS Blue Holographic (Dark)</option>
+                        <option value="light">Aerospace Lab (Light)</option>
+                      </select>
+                    </label>
+                  </div>
+
+                  <div class="two-col-fields">
+                    <label class="field">
+                      <span class="field-label">Preferred TTS Voice</span>
+                      <select id="settings-voice" class="select"></select>
+                    </label>
+                    <label class="field">
+                      <span class="field-label">Speech Rate: <strong id="settings-speech-rate-val" class="tabular-nums">1.0x</strong></span>
+                      <input type="range" id="settings-speech-rate" min="0.6" max="1.6" step="0.05" value="1.0" class="range" />
+                    </label>
+                  </div>
+
+                  <label class="toggle-card">
+                    <input type="checkbox" id="settings-autospeak" />
+                    <div>
+                      <strong>Auto-Speak AI Chat Responses</strong>
+                      <span>Read responses aloud when generated in AI Chat</span>
+                    </div>
+                  </label>
+
+                  <div class="btn-row">
+                    <button type="button" id="request-notifications-btn" class="btn btn-secondary">Enable Browser Notifications</button>
+                    <button type="button" id="export-all-data-btn" class="btn btn-secondary">Export All Local Data</button>
+                    <button type="button" id="clear-all-data-btn" class="btn btn-danger-ghost">Clear All Stored Data</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 12. ABOUT JARVIS PAGE -->
+          <section class="page" id="page-about" data-page="about">
+            <div class="about-grid">
+              <div class="hud-panel">
+                <div class="about-hero">
+                  <img src="./assets/logo.png" alt="JARVIS AI Emblem" class="about-logo" referrerpolicy="no-referrer" />
+                  <div>
+                    <h2 class="panel-title">JARVIS AI — Personal Holographic Assistant</h2>
+                    <p class="panel-subtitle">
+                      100% Static HTML5, CSS3 &amp; Vanilla JavaScript application designed for GitHub Pages and Google Gemini API.
+                    </p>
+                  </div>
+                </div>
+                <div class="about-prose">
+                  <p>
+                    JARVIS AI runs completely inside your browser with zero backend servers, zero PHP, and zero database dependencies.
+                    Your conversations, notes, tasks, and preferences are stored strictly in local browser storage on your current device—there is no automatic cloud synchronization across devices.
+                  </p>
+                  <p>
+                    For security, JARVIS asks confirmation before opening external websites and accurately discloses browser limitations rather than simulating control over operating system hardware or desktop apps.
+                  </p>
+                </div>
+              </div>
+
+              <div class="hud-panel">
+                <div class="panel-header">
+                  <h2 class="panel-title">Supported Smart Commands (EN &amp; বাংলা)</h2>
+                </div>
+                <div class="commands-table-wrap">
+                  <table class="hud-table">
+                    <thead>
+                      <tr>
+                        <th>Command Phrase</th>
+                        <th>Action Performed</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td class="font-mono">Hello JARVIS / হ্যালো জার্ভিস</td><td>Bilingual assistant greeting</td></tr>
+                      <tr><td class="font-mono">What time is it? / এখন কয়টা বাজে?</td><td>Reads current local clock time</td></tr>
+                      <tr><td class="font-mono">What is today's date? / আজকের তারিখ কত?</td><td>Reads today's full calendar date</td></tr>
+                      <tr><td class="font-mono">Calculate 100 + 200</td><td>Evaluates expression safely &amp; replies</td></tr>
+                      <tr><td class="font-mono">Open Google / YouTube / Gmail</td><td>Asks confirmation, then opens safely</td></tr>
+                      <tr><td class="font-mono">Search Google for ...</td><td>Confirms and launches Google search</td></tr>
+                      <tr><td class="font-mono">Change theme</td><td>Toggles Dark / Light HUD mode</td></tr>
+                      <tr><td class="font-mono">Clear conversation</td><td>Confirms and clears active chat</td></tr>
+                      <tr><td class="font-mono">Turn on voice mode</td><td>Opens Voice Console &amp; starts mic</td></tr>
+                      <tr><td class="font-mono">Tell me a joke</td><td>Tells a clean tech/science joke</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="hud-panel">
+                <div class="panel-header">
+                  <h2 class="panel-title">Keyboard Shortcuts</h2>
+                </div>
+                <div class="shortcuts-list">
+                  <div class="shortcut-row"><span>Open Quick Command Palette</span><kbd class="kbd-hint">Ctrl / Cmd + K</kbd></div>
+                  <div class="shortcut-row"><span>Switch to Dashboard / Chat / Voice / Settings</span><kbd class="kbd-hint">Alt + 1 / 2 / 3 / 0</kbd></div>
+                  <div class="shortcut-row"><span>Toggle Voice Microphone</span><kbd class="kbd-hint">Alt + M</kbd></div>
+                  <div class="shortcut-row"><span>Stop AI Generation / Close Modal</span><kbd class="kbd-hint">Escape</kbd></div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <!-- Compact Mobile Bottom Bar (<= 15% viewport height) -->
+        <nav class="mobile-bottom-nav" aria-label="Mobile Quick Navigation">
+          <button type="button" class="mob-nav-btn active" data-nav="dashboard">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+            </svg>
+            <span>Home</span>
+          </button>
+          <button type="button" class="mob-nav-btn" data-nav="chat">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            <span>Chat</span>
+          </button>
+          <button type="button" class="mob-nav-btn" data-nav="voice">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+            </svg>
+            <span>Voice</span>
+          </button>
+          <button type="button" class="mob-nav-btn" data-nav="tools">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+            </svg>
+            <span>Tools</span>
+          </button>
+          <button type="button" class="mob-nav-btn" data-nav="settings">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4" />
+            </svg>
+            <span>Settings</span>
+          </button>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
+      <div class="modal-card">
+        <h3 id="confirm-modal-title" class="modal-title">Confirm Action</h3>
+        <p id="confirm-modal-message" class="modal-message"></p>
+        <div class="modal-actions">
+          <button type="button" id="confirm-modal-cancel" class="btn btn-secondary">Cancel</button>
+          <button type="button" id="confirm-modal-ok" class="btn btn-primary">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- iOS Install Instructions Modal -->
+    <div id="ios-install-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="ios-modal-title">
+      <div class="modal-card">
+        <h3 id="ios-modal-title" class="modal-title">Install JARVIS AI on iPhone / iPad</h3>
+        <ol class="ios-steps">
+          <li>Tap the <strong>Share</strong> button in the Safari toolbar.</li>
+          <li>Scroll down and tap <strong>Add to Home Screen</strong>.</li>
+          <li>Tap <strong>Add</strong> to launch JARVIS AI as a standalone app.</li>
+        </ol>
+        <div class="modal-actions">
+          <button type="button" id="ios-modal-close" class="btn btn-primary">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Command Palette Modal -->
+    <div id="command-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="cmd-modal-title">
+      <div class="modal-card modal-card-lg">
+        <div class="modal-header-row">
+          <h3 id="cmd-modal-title" class="modal-title">JARVIS Command Palette</h3>
+          <button type="button" id="cmd-modal-close" class="icon-btn" aria-label="Close">×</button>
+        </div>
+        <form id="cmd-palette-form" class="stack-form">
+          <input
+            type="text"
+            id="cmd-palette-input"
+            class="input"
+            placeholder="Type a command (e.g., Open YouTube, Calculate 25*16, Change theme, or ask anything)..."
+            autocomplete="off"
+          />
+          <div class="cmd-suggestions">
+            <button type="button" class="btn btn-ghost btn-sm" data-palette-cmd="What time is it?">Time</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-palette-cmd="What is today's date?">Date</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-palette-cmd="Calculate 100 + 200">Calculate 100 + 200</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-palette-cmd="Change theme">Change theme</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-palette-cmd="Turn on voice mode">Voice mode</button>
+            <button type="button" class="btn btn-ghost btn-sm" data-palette-cmd="Open Google">Open Google</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+    <script type="module" src="./script.js"></script>
+  </body>
+</html>
